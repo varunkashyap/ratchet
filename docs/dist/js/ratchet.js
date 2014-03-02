@@ -290,8 +290,7 @@
 
   var PUSH = function (options) {
     var key;
-    var data = {};
-    var xhr  = PUSH.xhr;
+    var xhr = PUSH.xhr;
 
     options.container = options.container || options.transition ? document.querySelector('.content') : document.body;
 
@@ -464,13 +463,9 @@
     window.location.replace(url);
   };
 
-  var parseURL = function (url) {
-    var a = document.createElement('a'); a.href = url; return a;
-  };
-
   var extendWithDom = function (obj, fragment, dom) {
     var i;
-    var result    = {};
+    var result = {};
 
     for (i in obj) result[i] = obj[i];
 
