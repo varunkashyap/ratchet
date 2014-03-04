@@ -4,7 +4,7 @@
  * http://opensource.org/licenses/MIT
  * ---------------------------------- */
 
-!function () {
+!(function () {
   'use strict';
 
   var start     = {};
@@ -110,4 +110,4 @@
     toggle    = false;
   });
 
-}();
+}());
