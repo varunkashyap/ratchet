@@ -2,6 +2,7 @@
 // --------------
 // Adapted from phantom limb by Brian Cartensen
 
+/* jshint bitwise: false */
 /* global GLOBAL: true */
 
 function FingerBlast(element) {
