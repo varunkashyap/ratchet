@@ -14,6 +14,8 @@
  * ---------------------------------- */
 
 !function () {
+  'use strict';
+
   var findModals = function (target) {
     var i, modals = document.querySelectorAll('a');
     for (; target && target !== document; target = target.parentNode) {
@@ -42,6 +44,7 @@
  * ---------------------------------- */
 
 !function () {
+  'use strict';
 
   var popover;
 
@@ -55,7 +58,7 @@
   var onPopoverHidden = function () {
     popover.style.display = 'none';
     popover.removeEventListener('webkitTransitionEnd', onPopoverHidden);
-  }
+  };
 
   var backdrop = function () {
     var element = document.createElement('div');
@@ -74,13 +77,13 @@
   var getPopover = function (e) {
     var anchor = findPopovers(e.target);
 
-    if (!anchor || !anchor.hash || (anchor.hash.indexOf("/") > 0)) return;
+    if (!anchor || !anchor.hash || (anchor.hash.indexOf('/') > 0)) return;
 
     try {
       popover = document.querySelector(anchor.hash);
     }
     catch (error) {
-       popover = null;
+      popover = null;
     }
 
     if (popover == null) return;
@@ -88,7 +91,7 @@
     if (!popover || !popover.classList.contains('popover')) return;
 
     return popover;
-  }
+  };
 
   var showHidePopover = function (e) {
     var popover = getPopover(e);
@@ -114,7 +117,10 @@
  * http://opensource.org/licenses/MIT
  * ---------------------------------- */
 
+/* global _gaq: true */
+
 !function () {
+  'use strict';
 
   var noop = function () {};
 
@@ -165,7 +171,7 @@
   };
 
   var cachePop = function (id, direction) {
-    var forward           = direction == 'forward';
+    var forward           = direction === 'forward';
     var cacheForwardStack = JSON.parse(cacheMapping.cacheForwardStack || '[]');
     var cacheBackStack    = JSON.parse(cacheMapping.cacheBackStack    || '[]');
     var pushStack         = forward ? cacheBackStack    : cacheForwardStack;
@@ -195,7 +201,7 @@
       || location.host     !== target.host
       || !target.hash && /#/.test(target.href)
       || target.hash && target.href.replace(target.hash, '') === location.href.replace(location.hash, '')
-      || target.getAttribute('data-ignore') == 'push'
+      || target.getAttribute('data-ignore') === 'push'
     ) return;
 
     return target;
@@ -242,16 +248,16 @@
 
     if (activeObj.title) document.title = activeObj.title;
 
-    if (direction == 'back') {
-      transitionFrom    = JSON.parse(direction == 'back' ? cacheMapping.cacheForwardStack : cacheMapping.cacheBackStack);
+    if (direction === 'back') {
+      transitionFrom    = JSON.parse(direction === 'back' ? cacheMapping.cacheForwardStack : cacheMapping.cacheBackStack);
       transitionFromObj = getCached(transitionFrom[transitionFrom.length - 1]);
     } else {
       transitionFromObj = activeObj;
     }
 
-    if (direction == 'back' && !transitionFromObj.id) return PUSH.id = id;
+    if (direction === 'back' && !transitionFromObj.id) return PUSH.id = id;
 
-    transition = direction == 'back' ? transitionMap[transitionFromObj.transition] : transitionFromObj.transition;
+    transition = direction === 'back' ? transitionMap[transitionFromObj.transition] : transitionFromObj.transition;
 
     if (!activeDom) {
       return PUSH({
@@ -267,7 +273,7 @@
     if (transitionFromObj.transition) {
       activeObj = extendWithDom(activeObj, '.content', activeDom.cloneNode(true));
       for (key in bars) {
-        barElement = document.querySelector(bars[key])
+        barElement = document.querySelector(bars[key]);
         if (activeObj[key]) swapContent(activeObj[key], barElement);
         else if (barElement) barElement.parentNode.removeChild(barElement);
       }
@@ -300,7 +306,7 @@
 
     if (xhr && xhr.readyState < 4) {
       xhr.onreadystatechange = noop;
-      xhr.abort()
+      xhr.abort();
     }
 
     xhr = new XMLHttpRequest();
@@ -309,12 +315,12 @@
 
     xhr.onreadystatechange = function () {
       if (options._timeout) clearTimeout(options._timeout);
-      if (xhr.readyState == 4) xhr.status == 200 ? success(xhr, options) : failure(options.url);
+      if (xhr.readyState === 4) xhr.status === 200 ? success(xhr, options) : failure(options.url);
     };
 
     if (!PUSH.id) {
       cacheReplace({
-        id         : +new Date,
+        id         : +new Date(),
         url        : window.location.href,
         title      : document.title,
         timeout    : options.timeout,
@@ -346,7 +352,7 @@
 
     if (options.transition) {
       for (key in bars) {
-        barElement = document.querySelector(bars[key])
+        barElement = document.querySelector(bars[key]);
         if (data[key]) swapContent(data[key], barElement);
         else if (barElement) barElement.parentNode.removeChild(barElement);
       }
@@ -354,7 +360,7 @@
 
     swapContent(data.contents, options.container, options.transition, function () {
       cacheReplace({
-        id         : options.id || +new Date,
+        id         : options.id || +new Date(),
         url        : data.url,
         title      : data.title,
         timeout    : options.timeout,
@@ -363,12 +369,12 @@
       triggerStateChange();
     });
 
-    if (!options.ignorePush && window._gaq) _gaq.push(['_trackPageview']) // google analytics
+    if (!options.ignorePush && window._gaq) _gaq.push(['_trackPageview']); // google analytics
     if (!options.hash) return;
   };
 
   var failure = function (url) {
-    throw new Error('Could not get: ' + url)
+    throw new Error('Could not get: ' + url);
   };
 
 
@@ -387,7 +393,7 @@
     } else {
       enter  = /in$/.test(transition);
 
-      if (transition == 'fade') {
+      if (transition === 'fade') {
         container.classList.add('in');
         container.classList.add('fade');
         swap.classList.add('fade');
@@ -404,40 +410,40 @@
 
     if (!transition) complete && complete();
 
-    if (transition == 'fade') {
+    if (transition === 'fade') {
       container.offsetWidth; // force reflow
       container.classList.remove('in');
-      container.addEventListener('webkitTransitionEnd', fadeContainerEnd);
-
-      function fadeContainerEnd() {
+      var fadeContainerEnd = function () {
         container.removeEventListener('webkitTransitionEnd', fadeContainerEnd);
         swap.classList.add('in');
         swap.addEventListener('webkitTransitionEnd', fadeSwapEnd);
-      }
-      function fadeSwapEnd () {
+      };
+      var fadeSwapEnd = function () {
         swap.removeEventListener('webkitTransitionEnd', fadeSwapEnd);
         container.parentNode.removeChild(container);
         swap.classList.remove('fade');
         swap.classList.remove('in');
         complete && complete();
-      }
+      };
+      container.addEventListener('webkitTransitionEnd', fadeContainerEnd);
+
     }
 
     if (/slide/.test(transition)) {
-      container.offsetWidth; // force reflow
-      swapDirection      = enter ? 'right' : 'left'
-      containerDirection = enter ? 'left' : 'right'
-      container.classList.add(containerDirection);
-      swap.classList.remove(swapDirection);
-      swap.addEventListener('webkitTransitionEnd', slideEnd);
-
-      function slideEnd() {
+      var slideEnd = function () {
         swap.removeEventListener('webkitTransitionEnd', slideEnd);
         swap.classList.remove('sliding', 'sliding-in');
         swap.classList.remove(swapDirection);
         container.parentNode.removeChild(container);
         complete && complete();
-      }
+      };
+
+      container.offsetWidth; // force reflow
+      swapDirection      = enter ? 'right' : 'left';
+      containerDirection = enter ? 'left' : 'right';
+      container.classList.add(containerDirection);
+      swap.classList.remove(swapDirection);
+      swap.addEventListener('webkitTransitionEnd', slideEnd);
     }
   };
 
@@ -493,8 +499,8 @@
     if (/<html/i.test(responseText)) {
       head           = document.createElement('div');
       body           = document.createElement('div');
-      head.innerHTML = responseText.match(/<head[^>]*>([\s\S.]*)<\/head>/i)[0]
-      body.innerHTML = responseText.match(/<body[^>]*>([\s\S.]*)<\/body>/i)[0]
+      head.innerHTML = responseText.match(/<head[^>]*>([\s\S.]*)<\/head>/i)[0];
+      body.innerHTML = responseText.match(/<body[^>]*>([\s\S.]*)<\/body>/i)[0];
     } else {
       head           = body = document.createElement('div');
       head.innerHTML = responseText;
@@ -514,7 +520,7 @@
   // ==========================
 
   window.addEventListener('touchstart', function () { isScrolling = false; });
-  window.addEventListener('touchmove', function () { isScrolling = true; })
+  window.addEventListener('touchmove', function () { isScrolling = true; });
   window.addEventListener('touchend', touchend);
   window.addEventListener('click', function (e) { if (getTarget(e)) e.preventDefault(); });
   window.addEventListener('popstate', popstate);
@@ -529,6 +535,8 @@
  * ---------------------------------- */
 
 !function () {
+  'use strict';
+
   var getTarget = function (target) {
     var i, segmentedControls = document.querySelectorAll('.segmented-control .control-item');
     for (; target && target !== document; target = target.parentNode) {
@@ -536,7 +544,7 @@
     }
   };
 
-  window.addEventListener("touchend", function (e) {
+  window.addEventListener('touchend', function (e) {
     var activeTab;
     var activeBodies;
     var targetBody;
@@ -577,6 +585,7 @@
  * ---------------------------------- */
 
 !function () {
+  'use strict';
 
   var pageX;
   var pageY;
@@ -597,11 +606,12 @@
     for (; target && target !== document; target = target.parentNode) {
       for (i = sliders.length; i--;) { if (sliders[i] === target) return target; }
     }
-  }
+  };
 
   var getScroll = function () {
     var translate3d = slider.style.webkitTransform.match(/translate3d\(([^,]*)/);
-    return parseInt(translate3d ? translate3d[1] : 0)
+    var ret = translate3d ? translate3d[1] : 0;
+    return parseInt(ret, 10);
   };
 
   var setSlideNumber = function (offset) {
@@ -610,7 +620,7 @@
     slideNumber += offset;
     slideNumber = Math.min(slideNumber, 0);
     slideNumber = Math.max(-(slider.children.length - 1), slideNumber);
-  }
+  };
 
   var onTouchStart = function (e) {
     slider = getSlider(e.target);
@@ -624,7 +634,7 @@
     sliderWidth    = slider.offsetWidth;
     resistance     = 1;
     lastSlide      = -(slider.children.length - 1);
-    startTime      = +new Date;
+    startTime      = +new Date();
     pageX          = e.touches[0].pageX;
     pageY          = e.touches[0].pageY;
     deltaX         = 0;
@@ -643,7 +653,7 @@
     pageX  = e.touches[0].pageX;
     pageY  = e.touches[0].pageY;
 
-    if (typeof isScrolling == 'undefined') {
+    if (typeof isScrolling === 'undefined') {
       isScrolling = Math.abs(deltaY) > Math.abs(deltaX);
     }
 
@@ -653,8 +663,8 @@
 
     e.preventDefault();
 
-    resistance = slideNumber == 0         && deltaX > 0 ? (pageX / sliderWidth) + 1.25 :
-                 slideNumber == lastSlide && deltaX < 0 ? (Math.abs(pageX) / sliderWidth) + 1.25 : 1;
+    resistance = slideNumber === 0         && deltaX > 0 ? (pageX / sliderWidth) + 1.25 :
+                 slideNumber === lastSlide && deltaX < 0 ? (Math.abs(pageX) / sliderWidth) + 1.25 : 1;
 
     slider.style.webkitTransform = 'translate3d(' + offsetX + 'px,0,0)';
   };
@@ -663,7 +673,7 @@
     if (!slider || isScrolling) return;
 
     setSlideNumber(
-      (+new Date) - startTime < 1000 && Math.abs(deltaX) > 15 ? (deltaX < 0 ? -1 : 1) : 0
+      (+new Date()) - startTime < 1000 && Math.abs(deltaX) > 15 ? (deltaX < 0 ? -1 : 1) : 0
     );
 
     offsetX = slideNumber * sliderWidth;
@@ -693,6 +703,7 @@
  * ---------------------------------- */
 
 !function () {
+  'use strict';
 
   var start     = {};
   var touchMove = false;
@@ -704,7 +715,7 @@
     for (; target && target !== document; target = target.parentNode) {
       for (i = toggles.length; i--;) { if (toggles[i] === target) return target; }
     }
-  }
+  };
 
   window.addEventListener('touchstart', function (e) {
     e = e.originalEvent || e;
