@@ -156,7 +156,7 @@
     }
 
     if (direction === 'back' && !transitionFromObj.id) {
-      return PUSH.id = id;
+      return (PUSH.id = id);
     }
 
     transition = direction === 'back' ? transitionMap[transitionFromObj.transition] : transitionFromObj.transition;
