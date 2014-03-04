@@ -11,12 +11,11 @@
   "freeze"    : true,
   "indent"    : 2,
   "latedef"   : true,
-  "laxbreak"  : true,
+  "newcap"    : true,
   "nonbsp"    : true,
   "quotmark"  : "single",
   "strict"    : true,
   "trailing"  : true,
   "undef"     : true,
-  "unused"    : true,
-  "validthis" : true
+  "unused"    : true
 }

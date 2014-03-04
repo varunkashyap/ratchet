@@ -87,18 +87,16 @@
   var getTarget = function (e) {
     var target = findTarget(e.target);
 
-    if (
-      !  target
-      || e.which > 1
-      || e.metaKey
-      || e.ctrlKey
-      || isScrolling
-      || location.protocol !== target.protocol
-      || location.host     !== target.host
-      || !target.hash && /#/.test(target.href)
-      || target.hash && target.href.replace(target.hash, '') === location.href.replace(location.hash, '')
-      || target.getAttribute('data-ignore') === 'push'
-    ) { return; }
+    if (!target ||
+        e.which > 1 ||
+        e.metaKey ||
+        e.ctrlKey ||
+        isScrolling ||
+        location.protocol !== target.protocol ||
+        location.host     !== target.host ||
+        !target.hash && /#/.test(target.href) ||
+        target.hash && target.href.replace(target.hash, '') === location.href.replace(location.hash, '') ||
+        target.getAttribute('data-ignore') === 'push') { return; }
 
     return target;
   };
