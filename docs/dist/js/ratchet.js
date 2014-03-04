@@ -13,29 +13,37 @@
  * http://opensource.org/licenses/MIT
  * ---------------------------------- */
 
-!function () {
+!(function () {
   'use strict';
 
   var findModals = function (target) {
     var i, modals = document.querySelectorAll('a');
     for (; target && target !== document; target = target.parentNode) {
-      for (i = modals.length; i--;) { if (modals[i] === target) return target; }
+      for (i = modals.length; i--;) {
+        if (modals[i] === target) {
+          return target;
+        }
+      }
     }
   };
 
   var getModal = function (event) {
     var modalToggle = findModals(event.target);
-    if (modalToggle && modalToggle.hash) return document.querySelector(modalToggle.hash);
+    if (modalToggle && modalToggle.hash) {
+      return document.querySelector(modalToggle.hash);
+    }
   };
 
   window.addEventListener('touchend', function (event) {
     var modal = getModal(event);
     if (modal) {
-      if (modal && modal.classList.contains('modal')) modal.classList.toggle('active');
+      if (modal && modal.classList.contains('modal')) {
+        modal.classList.toggle('active');
+      }
       event.preventDefault(); // prevents rewriting url (apps can still use hash values in url)
     }
   });
-}();
+}());
 
 /* ----------------------------------
  * POPOVER v2.0.0
@@ -43,7 +51,7 @@
  * http://opensource.org/licenses/MIT
  * ---------------------------------- */
 
-!function () {
+!(function () {
   'use strict';
 
   var popover;
@@ -51,7 +59,11 @@
   var findPopovers = function (target) {
     var i, popovers = document.querySelectorAll('a');
     for (; target && target !== document; target = target.parentNode) {
-      for (i = popovers.length; i--;) { if (popovers[i] === target) return target; }
+      for (i = popovers.length; i--;) {
+        if (popovers[i] === target) {
+          return target;
+        }
+      }
     }
   };
 
@@ -60,7 +72,7 @@
     popover.removeEventListener('webkitTransitionEnd', onPopoverHidden);
   };
 
-  var backdrop = function () {
+  var backdrop = (function () {
     var element = document.createElement('div');
 
     element.classList.add('backdrop');
@@ -72,12 +84,14 @@
     });
 
     return element;
-  }();
+  }());
 
   var getPopover = function (e) {
     var anchor = findPopovers(e.target);
 
-    if (!anchor || !anchor.hash || (anchor.hash.indexOf('/') > 0)) return;
+    if (!anchor || !anchor.hash || (anchor.hash.indexOf('/') > 0)) {
+      return;
+    }
 
     try {
       popover = document.querySelector(anchor.hash);
@@ -86,9 +100,13 @@
       popover = null;
     }
 
-    if (popover == null) return;
+    if (popover == null) {
+      return;
+    }
 
-    if (!popover || !popover.classList.contains('popover')) return;
+    if (!popover || !popover.classList.contains('popover')) {
+      return;
+    }
 
     return popover;
   };
@@ -96,7 +114,9 @@
   var showHidePopover = function (e) {
     var popover = getPopover(e);
 
-    if (!popover) return;
+    if (!popover) {
+      return;
+    }
 
     popover.style.display = 'block';
     popover.offsetHeight;
@@ -108,7 +128,7 @@
   window.addEventListener('touchend', showHidePopover);
   window.addEventListener('click', showHidePopover);
 
-}();
+}());
 
 /* ----------------------------------
  * PUSH v2.0.0
@@ -119,7 +139,7 @@
 
 /* global _gaq: true */
 
-!function () {
+!(function () {
   'use strict';
 
   var noop = function () {};
@@ -147,7 +167,9 @@
 
   var cacheReplace = function (data, updates) {
     PUSH.id = data.id;
-    if (updates) data = getCached(data.id);
+    if (updates) {
+      data = getCached(data.id);
+    }
     cacheMapping[data.id] = JSON.stringify(data);
     window.history.replaceState(data.id, data.title, data.url);
     domCache[data.id] = document.body.cloneNode(true);
@@ -161,8 +183,12 @@
 
     cacheBackStack.push(id);
 
-    while (cacheForwardStack.length)               delete cacheMapping[cacheForwardStack.shift()];
-    while (cacheBackStack.length > maxCacheLength) delete cacheMapping[cacheBackStack.shift()];
+    while (cacheForwardStack.length) {
+      delete cacheMapping[cacheForwardStack.shift()];
+    }
+    while (cacheBackStack.length > maxCacheLength) {
+      delete cacheMapping[cacheBackStack.shift()];
+    }
 
     window.history.pushState(null, '', cacheMapping[PUSH.id].url);
 
@@ -177,7 +203,9 @@
     var pushStack         = forward ? cacheBackStack    : cacheForwardStack;
     var popStack          = forward ? cacheForwardStack : cacheBackStack;
 
-    if (PUSH.id) pushStack.push(PUSH.id);
+    if (PUSH.id) {
+      pushStack.push(PUSH.id);
+    }
     popStack.pop();
 
     cacheMapping.cacheForwardStack = JSON.stringify(cacheForwardStack);
@@ -191,18 +219,16 @@
   var getTarget = function (e) {
     var target = findTarget(e.target);
 
-    if (
-      !  target
-      || e.which > 1
-      || e.metaKey
-      || e.ctrlKey
-      || isScrolling
-      || location.protocol !== target.protocol
-      || location.host     !== target.host
-      || !target.hash && /#/.test(target.href)
-      || target.hash && target.href.replace(target.hash, '') === location.href.replace(location.hash, '')
-      || target.getAttribute('data-ignore') === 'push'
-    ) return;
+    if (!target ||
+        e.which > 1 ||
+        e.metaKey ||
+        e.ctrlKey ||
+        isScrolling ||
+        location.protocol !== target.protocol ||
+        location.host     !== target.host ||
+        !target.hash && /#/.test(target.href) ||
+        target.hash && target.href.replace(target.hash, '') === location.href.replace(location.hash, '') ||
+        target.getAttribute('data-ignore') === 'push') { return; }
 
     return target;
   };
@@ -214,7 +240,9 @@
   var touchend = function (e) {
     var target = getTarget(e);
 
-    if (!target) return;
+    if (!target) {
+      return;
+    }
 
     e.preventDefault();
 
@@ -237,7 +265,9 @@
     var transitionFromObj;
     var id = e.state;
 
-    if (!id || !cacheMapping[id]) return;
+    if (!id || !cacheMapping[id]) {
+      return;
+    }
 
     direction = PUSH.id < id ? 'forward' : 'back';
 
@@ -246,7 +276,9 @@
     activeObj = getCached(id);
     activeDom = domCache[id];
 
-    if (activeObj.title) document.title = activeObj.title;
+    if (activeObj.title) {
+      document.title = activeObj.title;
+    }
 
     if (direction === 'back') {
       transitionFrom    = JSON.parse(direction === 'back' ? cacheMapping.cacheForwardStack : cacheMapping.cacheBackStack);
@@ -255,7 +287,9 @@
       transitionFromObj = activeObj;
     }
 
-    if (direction === 'back' && !transitionFromObj.id) return PUSH.id = id;
+    if (direction === 'back' && !transitionFromObj.id) {
+      return (PUSH.id = id);
+    }
 
     transition = direction === 'back' ? transitionMap[transitionFromObj.transition] : transitionFromObj.transition;
 
@@ -273,9 +307,14 @@
     if (transitionFromObj.transition) {
       activeObj = extendWithDom(activeObj, '.content', activeDom.cloneNode(true));
       for (key in bars) {
-        barElement = document.querySelector(bars[key]);
-        if (activeObj[key]) swapContent(activeObj[key], barElement);
-        else if (barElement) barElement.parentNode.removeChild(barElement);
+        if (bars.hasOwnProperty(key)) {
+          barElement = document.querySelector(bars[key]);
+          if (activeObj[key]) {
+            swapContent(activeObj[key], barElement);
+          } else if (barElement) {
+            barElement.parentNode.removeChild(barElement);
+          }
+        }
       }
     }
 
@@ -301,7 +340,9 @@
     options.container = options.container || options.transition ? document.querySelector('.content') : document.body;
 
     for (key in bars) {
-      options[key] = options[key] || document.querySelector(bars[key]);
+      if (bars.hasOwnProperty(key)) {
+        options[key] = options[key] || document.querySelector(bars[key]);
+      }
     }
 
     if (xhr && xhr.readyState < 4) {
@@ -314,8 +355,12 @@
     xhr.setRequestHeader('X-PUSH', 'true');
 
     xhr.onreadystatechange = function () {
-      if (options._timeout) clearTimeout(options._timeout);
-      if (xhr.readyState === 4) xhr.status === 200 ? success(xhr, options) : failure(options.url);
+      if (options._timeout) {
+        clearTimeout(options._timeout);
+      }
+      if (xhr.readyState === 4) {
+        xhr.status === 200 ? success(xhr, options) : failure(options.url);
+      }
     };
 
     if (!PUSH.id) {
@@ -334,7 +379,9 @@
 
     xhr.send();
 
-    if (xhr.readyState && !options.ignorePush) cachePush();
+    if (xhr.readyState && !options.ignorePush) {
+      cachePush();
+    }
   };
 
 
@@ -346,15 +393,24 @@
     var barElement;
     var data = parseXHR(xhr, options);
 
-    if (!data.contents) return locationReplace(options.url);
+    if (!data.contents) {
+      return locationReplace(options.url);
+    }
 
-    if (data.title) document.title = data.title;
+    if (data.title) {
+      document.title = data.title;
+    }
 
     if (options.transition) {
       for (key in bars) {
-        barElement = document.querySelector(bars[key]);
-        if (data[key]) swapContent(data[key], barElement);
-        else if (barElement) barElement.parentNode.removeChild(barElement);
+        if (bars.hasOwnProperty(key)) {
+          barElement = document.querySelector(bars[key]);
+          if (data[key]) {
+            swapContent(data[key], barElement);
+          } else if (barElement) {
+            barElement.parentNode.removeChild(barElement);
+          }
+        }
       }
     }
 
@@ -369,8 +425,12 @@
       triggerStateChange();
     });
 
-    if (!options.ignorePush && window._gaq) _gaq.push(['_trackPageview']); // google analytics
-    if (!options.hash) return;
+    if (!options.ignorePush && window._gaq) {
+      _gaq.push(['_trackPageview']); // google analytics
+    }
+    if (!options.hash) {
+      return;
+    }
   };
 
   var failure = function (url) {
@@ -387,9 +447,13 @@
     var swapDirection;
 
     if (!transition) {
-      if (container) container.innerHTML = swap.innerHTML;
-      else if (swap.classList.contains('content')) document.body.appendChild(swap);
-      else document.body.insertBefore(swap, document.querySelector('.content'));
+      if (container) {
+        container.innerHTML = swap.innerHTML;
+      } else if (swap.classList.contains('content')) {
+        document.body.appendChild(swap);
+      } else {
+        document.body.insertBefore(swap, document.querySelector('.content'));
+      }
     } else {
       enter  = /in$/.test(transition);
 
@@ -408,7 +472,9 @@
       container.parentNode.insertBefore(swap, container);
     }
 
-    if (!transition) complete && complete();
+    if (!transition) {
+      complete && complete();
+    }
 
     if (transition === 'fade') {
       container.offsetWidth; // force reflow
@@ -460,7 +526,11 @@
   var findTarget = function (target) {
     var i, toggles = document.querySelectorAll('a');
     for (; target && target !== document; target = target.parentNode) {
-      for (i = toggles.length; i--;) { if (toggles[i] === target) return target; }
+      for (i = toggles.length; i--;) {
+        if (toggles[i] === target) {
+          return target;
+        }
+      }
     }
   };
 
@@ -473,11 +543,17 @@
     var i;
     var result = {};
 
-    for (i in obj) result[i] = obj[i];
+    for (i in obj) {
+      if (obj.hasOwnProperty(i)) {
+        result[i] = obj[i];
+      }
+    }
 
     Object.keys(bars).forEach(function (key) {
       var el = dom.querySelector(bars[key]);
-      if (el) el.parentNode.removeChild(el);
+      if (el) {
+        el.parentNode.removeChild(el);
+      }
       result[key] = el;
     });
 
@@ -494,7 +570,9 @@
 
     data.url = options.url;
 
-    if (!responseText) return data;
+    if (!responseText) {
+      return data;
+    }
 
     if (/<html/i.test(responseText)) {
       head           = document.createElement('div');
@@ -509,8 +587,11 @@
     data.title = head.querySelector('title');
     data.title = data.title && data.title.innerText.trim();
 
-    if (options.transition) data = extendWithDom(data, '.content', body);
-    else data.contents = body;
+    if (options.transition) {
+      data = extendWithDom(data, '.content', body);
+    } else {
+      data.contents = body;
+    }
 
     return data;
   };
@@ -522,11 +603,11 @@
   window.addEventListener('touchstart', function () { isScrolling = false; });
   window.addEventListener('touchmove', function () { isScrolling = true; });
   window.addEventListener('touchend', touchend);
-  window.addEventListener('click', function (e) { if (getTarget(e)) e.preventDefault(); });
+  window.addEventListener('click', function (e) { if (getTarget(e)) {e.preventDefault();} });
   window.addEventListener('popstate', popstate);
   window.PUSH = PUSH;
 
-}();
+}());
 
 /* ----------------------------------
  * Segmented controls v2.0.0
@@ -534,13 +615,17 @@
  * http://opensource.org/licenses/MIT
  * ---------------------------------- */
 
-!function () {
+!(function () {
   'use strict';
 
   var getTarget = function (target) {
     var i, segmentedControls = document.querySelectorAll('.segmented-control .control-item');
     for (; target && target !== document; target = target.parentNode) {
-      for (i = segmentedControls.length; i--;) { if (segmentedControls[i] === target) return target; }
+      for (i = segmentedControls.length; i--;) {
+        if (segmentedControls[i] === target) {
+          return target;
+        }
+      }
     }
   };
 
@@ -552,19 +637,27 @@
     var className     = 'active';
     var classSelector = '.' + className;
 
-    if (!targetTab) return;
+    if (!targetTab) {
+      return;
+    }
 
     activeTab = targetTab.parentNode.querySelector(classSelector);
 
-    if (activeTab) activeTab.classList.remove(className);
+    if (activeTab) {
+      activeTab.classList.remove(className);
+    }
 
     targetTab.classList.add(className);
 
-    if (!targetTab.hash) return;
+    if (!targetTab.hash) {
+      return;
+    }
 
     targetBody = document.querySelector(targetTab.hash);
 
-    if (!targetBody) return;
+    if (!targetBody) {
+      return;
+    }
 
     activeBodies = targetBody.parentNode.querySelectorAll(classSelector);
 
@@ -575,8 +668,8 @@
     targetBody.classList.add(className);
   });
 
-  window.addEventListener('click', function (e) { if (getTarget(e.target)) e.preventDefault(); });
-}();
+  window.addEventListener('click', function (e) { if (getTarget(e.target)) {e.preventDefault();} });
+}());
 /* ----------------------------------
  * SLIDER v2.0.0
  * Licensed under The MIT License
@@ -584,7 +677,7 @@
  * http://opensource.org/licenses/MIT
  * ---------------------------------- */
 
-!function () {
+!(function () {
   'use strict';
 
   var pageX;
@@ -604,7 +697,11 @@
   var getSlider = function (target) {
     var i, sliders = document.querySelectorAll('.slider > .slide-group');
     for (; target && target !== document; target = target.parentNode) {
-      for (i = sliders.length; i--;) { if (sliders[i] === target) return target; }
+      for (i = sliders.length; i--;) {
+        if (sliders[i] === target) {
+          return target;
+        }
+      }
     }
   };
 
@@ -625,7 +722,9 @@
   var onTouchStart = function (e) {
     slider = getSlider(e.target);
 
-    if (!slider) return;
+    if (!slider) {
+      return;
+    }
 
     var firstItem  = slider.querySelector('.slide');
 
@@ -646,7 +745,9 @@
   };
 
   var onTouchMove = function (e) {
-    if (e.touches.length > 1 || !slider) return; // Exit if a pinch || no slider
+    if (e.touches.length > 1 || !slider) {
+      return; // Exit if a pinch || no slider
+    }
 
     deltaX = e.touches[0].pageX - pageX;
     deltaY = e.touches[0].pageY - pageY;
@@ -657,7 +758,9 @@
       isScrolling = Math.abs(deltaY) > Math.abs(deltaX);
     }
 
-    if (isScrolling) return;
+    if (isScrolling) {
+      return;
+    }
 
     offsetX = (deltaX / resistance) + getScroll();
 
@@ -670,7 +773,9 @@
   };
 
   var onTouchEnd = function (e) {
-    if (!slider || isScrolling) return;
+    if (!slider || isScrolling) {
+      return;
+    }
 
     setSlideNumber(
       (+new Date()) - startTime < 1000 && Math.abs(deltaX) > 15 ? (deltaX < 0 ? -1 : 1) : 0
@@ -694,7 +799,7 @@
   window.addEventListener('touchmove', onTouchMove);
   window.addEventListener('touchend', onTouchEnd);
 
-}();
+}());
 
 /* ----------------------------------
  * TOGGLE v2.0.0
@@ -702,7 +807,7 @@
  * http://opensource.org/licenses/MIT
  * ---------------------------------- */
 
-!function () {
+!(function () {
   'use strict';
 
   var start     = {};
@@ -713,7 +818,11 @@
   var findToggle = function (target) {
     var i, toggles = document.querySelectorAll('.toggle');
     for (; target && target !== document; target = target.parentNode) {
-      for (i = toggles.length; i--;) { if (toggles[i] === target) return target; }
+      for (i = toggles.length; i--;) {
+        if (toggles[i] === target) {
+          return target;
+        }
+      }
     }
   };
 
@@ -722,7 +831,9 @@
 
     toggle = findToggle(e.target);
 
-    if (!toggle) return;
+    if (!toggle) {
+      return;
+    }
 
     var handle      = toggle.querySelector('.toggle-handle');
     var toggleWidth = toggle.clientWidth;
@@ -736,9 +847,13 @@
   window.addEventListener('touchmove', function (e) {
     e = e.originalEvent || e;
 
-    if (e.touches.length > 1) return; // Exit if a pinch
+    if (e.touches.length > 1) {
+      return; // Exit if a pinch
+    }
 
-    if (!toggle) return;
+    if (!toggle) {
+      return;
+    }
 
     var handle      = toggle.querySelector('.toggle-handle');
     var current     = e.touches[0];
@@ -749,12 +864,18 @@
     touchMove = true;
     distanceX = current.pageX - start.pageX;
 
-    if (Math.abs(distanceX) < Math.abs(current.pageY - start.pageY)) return;
+    if (Math.abs(distanceX) < Math.abs(current.pageY - start.pageY)) {
+      return;
+    }
 
     e.preventDefault();
 
-    if (distanceX < 0)      return handle.style.webkitTransform = 'translate3d(0,0,0)';
-    if (distanceX > offset) return handle.style.webkitTransform = 'translate3d(' + offset + 'px,0,0)';
+    if (distanceX < 0) {
+      return (handle.style.webkitTransform = 'translate3d(0,0,0)');
+    }
+    if (distanceX > offset) {
+      return (handle.style.webkitTransform = 'translate3d(' + offset + 'px,0,0)');
+    }
 
     handle.style.webkitTransform = 'translate3d(' + distanceX + 'px,0,0)';
 
@@ -762,7 +883,9 @@
   });
 
   window.addEventListener('touchend', function (e) {
-    if (!toggle) return;
+    if (!toggle) {
+      return;
+    }
 
     var handle      = toggle.querySelector('.toggle-handle');
     var toggleWidth = toggle.clientWidth;
@@ -770,8 +893,11 @@
     var offset      = (toggleWidth - handleWidth);
     var slideOn     = (!touchMove && !toggle.classList.contains('active')) || (touchMove && (distanceX > (toggleWidth/2 - handleWidth/2)));
 
-    if (slideOn) handle.style.webkitTransform = 'translate3d(' + offset + 'px,0,0)';
-    else handle.style.webkitTransform = 'translate3d(0,0,0)';
+    if (slideOn) {
+      handle.style.webkitTransform = 'translate3d(' + offset + 'px,0,0)';
+    } else {
+      handle.style.webkitTransform = 'translate3d(0,0,0)';
+    }
 
     toggle.classList[slideOn ? 'add' : 'remove']('active');
 
@@ -787,4 +913,4 @@
     toggle    = false;
   });
 
-}();
+}());
